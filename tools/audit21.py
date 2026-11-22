@@ -47,18 +47,18 @@ d = ImageDraw.Draw(img)
 y = 10
 y_head = R.head_block(d, y)
 y_reg = R.region_block(d, y_head)
-check(y_head <= 200, f"head block ends at {y_head}, over budget")
-check(y_reg <= 240, f"region strip ends at {y_reg}, over budget")
+check(y_head <= 190, f"head block ends at {y_head}, over budget")
+check(y_reg <= 250, f"region strip ends at {y_reg}, over budget")
 
 footer_h = 80
 bottom = R.H - 8 - footer_h
 flex = bottom - y_reg
-lead_h = int(flex * 0.43)
-cards_h = int(flex * 0.35)
+lead_h = int(flex * 0.33)
+cards_h = int(flex * 0.40)
 rail_h = flex - lead_h - cards_h - 18
 
-check(lead_h > 240, f"lead row only {lead_h}px: the pictures would be too small")
-check(cards_h > 200, f"card grid only {cards_h}px")
+check(lead_h > 230, f"lead row only {lead_h}px: the pictures would be too small")
+check(cards_h > 280, f"card grid only {cards_h}px")
 check(rail_h > 110, f"rail only {rail_h}px")
 
 ends = y_reg + lead_h + 8 + cards_h + 10 + rail_h

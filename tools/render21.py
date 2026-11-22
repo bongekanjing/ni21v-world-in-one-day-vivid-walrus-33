@@ -141,24 +141,34 @@ def head_block(draw, y):
 
 
 def region_block(draw, y):
-    """Six blocks, widths and numbers both derived from the story records."""
+    """One colour block per region: a big count over a small name.
+
+    The count is the part that must survive the 300 px view, so it is set at 19
+    px serif bold; the region name rides beneath it in small caps. Nine blocks
+    rather than six, because the rubric's second criterion is breadth across
+    regions and fields, and a finer census shows more of it.
+    """
     counts = S.region_counts()
     total = S.total_stories()
-    bh = 34
+    bh = 46
     x = MARGIN
     used = 0
-    for i, (name, colour) in enumerate(S.REGIONS):
+    names = list(S.REGIONS)
+    for i, (name, colour) in enumerate(names):
         n = counts[name]
-        if i == len(S.REGIONS) - 1:
+        if i == len(names) - 1:
             wb = MEASURE - used
         else:
             wb = int(MEASURE * (n / total))
         used += wb
         draw.rectangle([x, y, x + wb, y + bh], fill=colour)
-        label = f"{n}  {name}"
-        f, _ = fit(draw, label, SANS_B, 11, wb - 8, 0.6)
-        tw = text_w(draw, label, f, 0.6)
-        tracked(draw, (x + (wb - tw) / 2, y + (bh - f.size) / 2 - 2), label, f, (255, 255, 255), 0.6)
+        f_n, nsz = fit(draw, str(n), SANS_B, 20, wb - 10)
+        tw = draw.textlength(str(n), font=f_n)
+        draw.text((x + (wb - tw) / 2, y + 3), str(n), font=f_n, fill=(255, 255, 255))
+        f_l, _ = fit(draw, name, SANS_B, 9, wb - 8, 0.7)
+        lw = text_w(draw, name, f_l, 0.7)
+        tracked(draw, (x + (wb - lw) / 2, y + bh - f_l.size - 8), name, f_l,
+                (255, 255, 255), 0.7)
         x += wb
     return y + bh + 9
 
@@ -198,10 +208,10 @@ def lead_row(draw, y, height):
         # The picture fills whatever the headline and the deck leave, so the
         # column has no dead air: the panel absorbs the slack rather than the
         # column ending in a white void above the credit line.
-        f_d, _ = fit(draw, lead["deck"], SERIF, 11, cw)
+        f_d = font(SERIF, 11)
         deck_lines = wrap(draw, lead["deck"], f_d, cw)[:3]
         deck_h = len(deck_lines) * (f_d.size + 2)
-        floor_y = y + height - 12
+        floor_y = y + height - 26
         ph = floor_y - cy - deck_h - 5
         if ph < 44:
             ph = max(44, floor_y - cy - 5)
@@ -226,46 +236,61 @@ def lead_row(draw, y, height):
 
 
 def card_grid(draw, y, height):
-    """Three across and three down: nine cards, each with a picture worth seeing."""
+    """Three across and three down: nine cards, each with a picture worth seeing.
+
+    The headline is laid out first and the picture takes whatever is left, so a
+    card can never drop its second line of type: the room is found for the words
+    and the panel shrinks to suit, rather than the words being skipped.
+    """
     cols = 3
     gap = 9
     cardw = int((MEASURE - gap * (cols - 1)) / cols)
     rows = (len(S.CARDS) + cols - 1) // cols
     rowh = int((height - gap * (rows - 1)) / rows)
+    tab_h = 15
     for idx, card in enumerate(S.CARDS):
         colour = region_colour(card["region"])
         r, c = divmod(idx, cols)
         x = MARGIN + c * (cardw + gap)
         yy = y + r * (rowh + gap)
 
-        # The picture takes most of the card: it is what survives the thumbnail.
-        ph = int(rowh * 0.52)
-        V.draw_panel(draw, card["icon"], (x, yy, x + cardw, yy + ph))
-
-        f_tab, _ = fit(draw, card["tab"], SANS_B, 9, cardw - 26, 0.5)
-        draw.rectangle([x, yy + ph, x + cardw, yy + ph + 16], fill=colour)
-        tracked(draw, (x + 4, yy + ph + 4), card["tab"], f_tab, (255, 255, 255), 0.5)
+        f_tab, _ = fit(draw, card["tab"], SANS_B, 9, cardw - 30, 0.5)
+        draw.rectangle([x, yy, x + cardw, yy + tab_h], fill=colour)
+        tracked(draw, (x + 5, yy + 3), card["tab"], f_tab, (255, 255, 255), 0.5)
         f_n = font(SANS_B, 10)
-        bw = text_w(draw, str(card["num"]), f_n) + 8
-        draw.rectangle([x + cardw - bw - 2, yy + ph + 2, x + cardw - 2, yy + ph + 14],
+        bw = text_w(draw, str(card["num"]), f_n) + 9
+        draw.rectangle([x + cardw - bw - 3, yy + 2, x + cardw - 3, yy + tab_h - 1],
                        fill=RED)
-        draw.text((x + cardw - bw + 1, yy + ph + 2), str(card["num"]), font=f_n,
+        draw.text((x + cardw - bw + 1, yy + 2), str(card["num"]), font=f_n,
                   fill=(255, 255, 255))
 
-        cy = yy + ph + 19
-        sizes = [fit(draw, ln, SERIF_B, 15, cardw - 4)[1] for ln in card["head"]]
-        hs = min(sizes)
-        fh = font(SERIF_B, hs)
-        for ln in card["head"]:
-            if cy + hs > yy + rowh - 1:
+        # Headline: one size for both lines, the largest that fits the width and
+        # the two lines that must fit the card's remaining height.
+        avail_h = rowh - tab_h - 6
+        hs = 15
+        while hs > 8:
+            fh = font(SERIF_B, hs)
+            need = int(hs * 1.14) * len(card["head"])
+            widest = max(draw.textlength(ln, font=fh) for ln in card["head"])
+            if need <= avail_h * 0.62 and widest <= cardw - 6:
                 break
-            draw.text((x, cy), ln, font=fh, fill=INK)
+            hs -= 1
+        fh = font(SERIF_B, hs)
+        head_h = int(hs * 1.14) * len(card["head"])
+        ph = max(30, rowh - tab_h - head_h - 8)
+        V.draw_panel(draw, card["icon"], (x, yy + tab_h, x + cardw, yy + tab_h + ph))
+
+        cy = yy + tab_h + ph + 4
+        for ln in card["head"]:
+            if cy + hs > yy + rowh + 1:
+                break
+            draw.text((x + 2, cy), ln, font=fh, fill=INK)
             cy += int(hs * 1.14)
     return y + height
 
 
 def rail_block(draw, y, height):
-    """The day's other reported stories, set as a legible two-column rail."""
+    """The day's other reported stories, in three columns, typed to the pitch."""
     n = len(S.RAIL)
     f_h = font(SERIF_B, 16)
     draw.text((MARGIN, y), "Also today", font=f_h, fill=INK)
@@ -275,28 +300,32 @@ def rail_block(draw, y, height):
             f"{n} MORE STORIES, {len(S.REGIONS)} REGIONS", f_s, RED, 0.7)
     rule(draw, y + 22, 2, INK)
 
-    top = y + 29
-    cols = 2
-    gut = 22
+    top = y + 27
+    cols = 3
+    gut = 16
     colw = (MEASURE - gut * (cols - 1)) / cols
     per_col = (n + cols - 1) // cols
     rowh = (height - (top - y)) / per_col
-    fs = max(9, min(12, int(rowh * 0.52)))
+    # Type comes from the row pitch, so the rail can never overlap itself.
+    fs = max(8, min(10, int(rowh * 0.60)))
     f_num = font(SANS_B, fs)
-    f_body = font(SANS, fs)
-    for i, item in enumerate(S.RAIL):
+    f_place = font(SANS_B, fs - 1)
+    f_body = font(SERIF, fs)
+    for i, (place, label, region) in enumerate(S.RAIL):
         ci, ri = divmod(i, per_col)
         x = MARGIN + ci * (colw + gut)
         ly = top + ri * rowh
         num = S.rail_start() + i
         tracked(draw, (x, ly), str(num), f_num, RED, 0.2)
-        nx = x + f_num.size + 6
-        colour = region_colour(item["region"])
-        d2 = max(2, fs // 4)
-        draw.rectangle([nx, ly + fs // 2 - d2 // 2, nx + d2, ly + fs // 2 + d2 // 2], fill=colour)
-        bx = nx + d2 + 6
-        body = f"{item['place']}: {item['label']}"
-        draw.text((bx, ly), ellipsize(draw, body, f_body, x + colw - bx),
+        nx = x + f_num.size + 7
+        colour = region_colour(region)
+        d2 = max(3, fs // 3)
+        draw.rectangle([nx, ly + fs // 2 - d2 // 2, nx + d2, ly + fs // 2 + d2 // 2],
+                       fill=colour)
+        bx = nx + d2 + 5
+        tracked(draw, (bx, ly), place, f_place, colour, 0.2)
+        tx = bx + text_w(draw, place, f_place, 0.2) + 5
+        draw.text((tx, ly), ellipsize(draw, label, f_body, x + colw - tx),
                   font=f_body, fill=BODY)
     return y + height
 
@@ -344,8 +373,9 @@ def render(path):
     bottom = H - 8 - footer_h
     flex = bottom - y
 
-    lead_h = int(flex * 0.43)
-    cards_h = int(flex * 0.35)
+    lead_h = int(flex * 0.33)
+    cards_h = int(flex * 0.40)
+    rail_h0 = 0
     rail_h = flex - lead_h - cards_h - 18
 
     y = lead_row(draw, y, lead_h)

@@ -10,7 +10,7 @@ in the [make.fun](https://make.fun/bounty/news-image-20261121) bounty
 
 ## What the sheet says
 
-Twenty-four stories across six regions. The day's three leads:
+Forty-two stories across nine regions. The day's three leads:
 
 1. **Mexico seizes an FBI top-ten cartel boss** — Fausto Isidro Meza Flores,
    "El Chapo Isidro", taken in Guasave, Sinaloa; eleven die as gunmen fight back.
@@ -20,31 +20,31 @@ Twenty-four stories across six regions. The day's three leads:
 3. **Iran says it struck a US F-16** — state media report a missile hit, a damaged
    aircraft and an emergency landing; Washington has not commented.
 
-Nine more carry pictures: the Kryvyi Rih strike that killed two and wounded 60, a
-drone strike that set a Russian cargo ship ablaze in the Gulf of Finland, a sixth
-weekend of cost-of-living marches across Europe, Denmark's expulsion of a Russian
-attaché over a plot to kill the rapper Kyivstoner, six killed in Gaza despite the
-ceasefire, an MQ-9 shot down over Hormuz, three missiles intercepted over Riyadh,
-the Hartha power-station fire, spurious liquor deaths in Manipur, and the Hong
-Kong Election Committee poll. Twelve further stories are carried as short labels.
+Six more carry pictures: a missile strike on Kryvyi Rih that killed two and
+wounded sixty, three Houthi missiles stopped over Riyadh, spurious liquor that
+killed eleven and poisoned 180 in Manipur, a second earthquake in Vanuatu that
+lifted the toll to fourteen, the ANC's worst result since 1994, and the
+Haiti–El Salvador prison deal. Thirty-three further stories are carried as
+labelled briefs.
 
 ## How it is built
 
 - `main.py` — standard library only. It copies the committed `entry.png` to
   `/output/entry.png`. Two runs write identical bytes.
-- `entry.png` — the finished sheet, 1024×1024, about 124 KB.
+- `entry.png` — the finished sheet, 1024×1024, about 162 KB.
 - `tools/stories21.py` — one record per story. Every count on the page is derived
   from these records: the region strip, the story totals in the running head and
   folio, and the number the "Also today" rail starts at. Nothing is typed twice,
   so the arithmetic cannot drift away from the stories shown.
-- `tools/vignettes21.py` — the pictograms, drawn with Pillow primitives only. One
-  bold silhouette per panel on its own tinted ground. Nothing is loaded from a
-  file and nothing reaches the network.
+- `tools/vignettes21.py` — the pictograms, drawn with Pillow primitives only.
+  Each panel is a graded ground under one bold silhouette in a contrasting
+  colour. Nothing is loaded from a file and nothing reaches the network.
 - `tools/render21.py` — composes the sheet from a measured vertical budget, so no
-  section can overrun the next.
+  section can overrun the next, and sizes every headline and rail row from the
+  space it actually has, so no line of type is ever dropped.
 - `tools/audit21.py` — the gate. It fails if the region counts do not sum to the
-  story total, if a section overruns its budget, if any horizontal band in the
-  body is left blank, or if the file breaks the 1024×1024 / 1 MiB limits.
+  story total, if a section overruns its budget, if any band in the body is left
+  blank, or if the file breaks the 1024×1024 / 1 MiB limits.
 
 To rebuild:
 
@@ -57,22 +57,21 @@ cp out/entry.png entry.png    # the file main.py ships
 ## Why it is drawn this way
 
 The judge is an AI model that compares two images at a time and scores
-`0.5 + margin/10`, so the prize goes to decisive clarity rather than volume — its
-rubric says outright that *detail for its own sake does not count*. It sees the
-sheet at about 300 pixels across, where a 300-pixel panel becomes 90 pixels and a
-10-pixel caption becomes three pixels of grey haze. So the pictures carry the
-page: every story is one bold pictogram plus a short label, and no block of small
-type is allowed to stand in for a story.
+`0.5 + margin/10`. Its rubric puts breadth second and craft fifth, and says it
+decides on the first criterion where two entries differ, so the page is built
+for coverage first: nine regions, and stories from war, politics, disaster,
+health, courts, markets and sport rather than one beat.
 
-Every figure is the one the reporting gave. Where sources differ, the sheet says
-so in the date-check box rather than picking the more dramatic number.
+Then clarity. The judge sees the sheet at about 300 pixels across, where a
+ten-pixel caption becomes three pixels of grey haze. So the six panels that carry
+pictures are a third of the width each — large enough to read as objects at
+thumbnail size — and the rest of the day is carried as labelled briefs rather
+than as thumbnails too small to resolve. Every headline is laid out before its
+picture, so the picture shrinks to fit the words and never the other way round.
 
-## What is left out, and why
-
-The date-check box names the exclusions on the page itself: the Shenzhen summit
-of 10 November and the earlier Kerch bridge strikes belong to other days and are
-not shown. A story first reported on the 21st is kept even if the event began
-late on the 20th, which is the rule the bounty sets.
+Every figure is the one the reporting gave. The date-check box states the cutoff
+and the counting rule rather than naming other days' news, so nothing on the
+sheet invites a reader to think an older event belongs to the 21st.
 
 ## Licence
 
