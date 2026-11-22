@@ -10,7 +10,9 @@ in the [make.fun](https://make.fun/bounty/news-image-20261121) bounty
 
 ## What the sheet says
 
-Forty-two stories across nine regions. The day's three leads:
+Forty-two stories across nine regions, six figures above the fold, and the day
+stamped twice over: by name, Saturday 21 November 2026, and by number, day 325
+of the year. The day's three leads:
 
 1. **Mexico seizes an FBI top-ten cartel boss** — Fausto Isidro Meza Flores,
    "El Chapo Isidro", taken in Guasave, Sinaloa; eleven die as gunmen fight back.
@@ -20,7 +22,11 @@ Forty-two stories across nine regions. The day's three leads:
 3. **Iran says it struck a US F-16** — state media report a missile hit, a damaged
    aircraft and an emergency landing; Washington has not commented.
 
-Six more carry pictures: a missile strike on Kryvyi Rih that killed two and
+A six-figure band above the region strip gives the day its quantities: 11 dead
+in Guasave, 3 projectiles down in Poland, 60 wounded in Kryvyi Rih, 14 dead in
+Vanuatu, 180 poisoned in Manipur, and the ANC's 31 percent.
+
+Six stories carry pictures: a missile strike on Kryvyi Rih that killed two and
 wounded sixty, three Houthi missiles stopped over Riyadh, spurious liquor that
 killed eleven and poisoned 180 in Manipur, a second earthquake in Vanuatu that
 lifted the toll to fourteen, the ANC's worst result since 1994, and the
@@ -31,8 +37,9 @@ labelled briefs.
 
 - `main.py` — standard library only. It copies the committed `entry.png` to
   `/output/entry.png`. Two runs write identical bytes.
-- `entry.png` — the finished sheet, 1024×1024, about 162 KB.
-- `tools/stories21.py` — one record per story. Every count on the page is derived
+- `entry.png` — the finished sheet, 1024×1024, about 169 KB.
+- `tools/stories21.py` — one record per story, plus the six figures and the
+  day-of-year, which is computed from the date rather than typed. Every count on the page is derived
   from these records: the region strip, the story totals in the running head and
   folio, and the number the "Also today" rail starts at. Nothing is typed twice,
   so the arithmetic cannot drift away from the stories shown.

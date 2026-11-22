@@ -117,6 +117,10 @@ def head_block(draw, y):
     """Running head, the date, the day's three sell lines."""
     f_head = font(SANS_B, 11)
     tracked(draw, (MARGIN, y), "THE WORLD IN ONE DAY", f_head, INK, 1.6)
+    # Day of year in the middle: a second, numeric way of naming the day.
+    mid = f"DAY {S.DAY_OF_YEAR} OF 2026"
+    f_m = font(SANS_B, 11)
+    tracked(draw, ((W - text_w(draw, mid, f_m, 1.2)) / 2, y), mid, f_m, RED, 1.2)
     right = f"{S.total_stories()} STORIES  ·  {len(S.REGIONS)} REGIONS"
     f_r = font(SANS_B, 11)
     tracked(draw, (W - MARGIN - text_w(draw, right, f_r, 1.2), y), right, f_r, RED, 1.2)
@@ -132,12 +136,35 @@ def head_block(draw, y):
     rule(draw, y, 2, INK)
     y += 7
 
-    sell = "     ·     ".join(S.STRAPLINE)
-    f_it, _ = fit(draw, sell, SERIF_B, 15, MEASURE)
-    tw = draw.textlength(sell, font=f_it)
-    draw.text(((W - tw) / 2, y), sell, font=f_it, fill=RED)
+    st = "     ·     ".join(S.STRAPLINE)
+    f_it, _ = fit(draw, st, SERIF_B, 15, MEASURE)
+    tw = draw.textlength(st, font=f_it)
+    draw.text(((W - tw) / 2, y), st, font=f_it, fill=RED)
     y += f_it.size + 8
     return y
+
+
+def figures_block(draw, y):
+    """Six figures in red with captions, rule-separated, on one baseline band."""
+    colw = MEASURE / 6
+    top = y
+    bottoms = []
+    for i, (num, cap) in enumerate(S.FIGURES):
+        cx = MARGIN + i * colw
+        f_num, nsz = fit(draw, num, SERIF_B, 30, colw - 12)
+        draw.text((cx + 4, top), num, font=f_num, fill=RED)
+        cy = top + int(nsz * 1.0) + 1
+        f_cap = font(SANS_B, 8)
+        for ln in cap.split("\n"):
+            for piece in wrap(draw, ln, f_cap, colw - 12):
+                draw.text((cx + 4, cy), piece.upper(), font=f_cap, fill=BODY)
+                cy += f_cap.size + 2
+        bottoms.append(cy)
+        if i:
+            draw.line([(cx - 3, top + 2), (cx - 3, max(bottoms))], fill=RULE, width=1)
+    y = max(bottoms) + 5
+    rule(draw, y, 2)
+    return y + 8
 
 
 def region_block(draw, y):
@@ -367,14 +394,15 @@ def render(path):
 
     y = 10
     y = head_block(draw, y)
+    y = figures_block(draw, y)
     y = region_block(draw, y)
 
     footer_h = 80
     bottom = H - 8 - footer_h
     flex = bottom - y
 
-    lead_h = int(flex * 0.33)
-    cards_h = int(flex * 0.40)
+    lead_h = int(flex * 0.34)
+    cards_h = int(flex * 0.42)
     rail_h0 = 0
     rail_h = flex - lead_h - cards_h - 18
 

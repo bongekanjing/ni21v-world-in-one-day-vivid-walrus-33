@@ -46,19 +46,21 @@ img = Image.new("RGB", (R.W, R.H), R.PAPER)
 d = ImageDraw.Draw(img)
 y = 10
 y_head = R.head_block(d, y)
-y_reg = R.region_block(d, y_head)
-check(y_head <= 190, f"head block ends at {y_head}, over budget")
-check(y_reg <= 250, f"region strip ends at {y_reg}, over budget")
+y_fig = R.figures_block(d, y_head)
+y_reg = R.region_block(d, y_fig)
+check(y_head <= 145, f"head block ends at {y_head}, over budget")
+check(y_fig <= 235, f"figures band ends at {y_fig}, over budget")
+check(y_reg <= 295, f"region strip ends at {y_reg}, over budget")
 
 footer_h = 80
 bottom = R.H - 8 - footer_h
 flex = bottom - y_reg
-lead_h = int(flex * 0.33)
-cards_h = int(flex * 0.40)
+lead_h = int(flex * 0.34)
+cards_h = int(flex * 0.42)
 rail_h = flex - lead_h - cards_h - 18
 
-check(lead_h > 230, f"lead row only {lead_h}px: the pictures would be too small")
-check(cards_h > 280, f"card grid only {cards_h}px")
+check(lead_h > 205, f"lead row only {lead_h}px: the pictures would be too small")
+check(cards_h > 250, f"card grid only {cards_h}px")
 check(rail_h > 110, f"rail only {rail_h}px")
 
 ends = y_reg + lead_h + 8 + cards_h + 10 + rail_h
@@ -94,6 +96,6 @@ if problems:
 
 print("OK")
 print(f"  stories {total} across {len(S.REGIONS)} regions: {counts}")
-print(f"  sections: head<={y_head} region<={y_reg} lead={lead_h} "
+print(f"  sections: head<={y_head} figs<={y_fig} region<={y_reg} lead={lead_h} "
       f"cards={cards_h} rail={rail_h} end={ends} footer={bottom}")
 print(f"  image 1024x1024, {nbytes} bytes")

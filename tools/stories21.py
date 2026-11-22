@@ -15,12 +15,29 @@ markets and sport.
 
 DAY_LABEL = "Saturday 21 November 2026"
 
+# Day of year, so the sheet dates itself twice: by name and by number.
+import datetime as _dt
+
+DAY_OF_YEAR = (_dt.date(2026, 11, 21) - _dt.date(2026, 1, 1)).days + 1
+
 # Three sell lines under the date, in the order the leads appear.
 STRAPLINE = (
     "Cartel boss taken in Mexico",
     "Russian projectiles land in Poland",
     "Iran says it struck a US F-16",
 )
+
+# Six figures, each one stated by the reporting of a story on the sheet. They
+# give the day a quantitative spine above the fold, the way a front page's
+# "by the numbers" strip does.
+FIGURES = [
+    ("11", "die in Guasave as a\ncartel boss is taken"),
+    ("3", "Russian projectiles\nfall inside Poland"),
+    ("60", "wounded in one\nstrike on Kryvyi Rih"),
+    ("14", "dead as a second\nquake hits Vanuatu"),
+    ("180", "poisoned by\nspurious liquor"),
+    ("31%", "the ANC's weakest\nvote since 1994"),
+]
 
 # Nine regions, each with its own colour. Short labels: the strip is read at
 # 300 px, where a long region name becomes a grey smear.
