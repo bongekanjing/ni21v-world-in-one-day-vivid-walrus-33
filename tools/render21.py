@@ -269,19 +269,19 @@ def card_grid(draw, y, height):
     card can never drop its second line of type: the room is found for the words
     and the panel shrinks to suit, rather than the words being skipped.
     """
-    cols = 3
-    gap = 9
+    cols = 2
+    gap = 10
     cardw = int((MEASURE - gap * (cols - 1)) / cols)
     rows = (len(S.CARDS) + cols - 1) // cols
     rowh = int((height - gap * (rows - 1)) / rows)
-    tab_h = 15
+    tab_h = 19
     for idx, card in enumerate(S.CARDS):
         colour = region_colour(card["region"])
         r, c = divmod(idx, cols)
         x = MARGIN + c * (cardw + gap)
         yy = y + r * (rowh + gap)
 
-        f_tab, _ = fit(draw, card["tab"], SANS_B, 9, cardw - 30, 0.5)
+        f_tab, _ = fit(draw, card["tab"], SANS_B, 11, cardw - 34, 0.6)
         draw.rectangle([x, yy, x + cardw, yy + tab_h], fill=colour)
         tracked(draw, (x + 5, yy + 3), card["tab"], f_tab, (255, 255, 255), 0.5)
         f_n = font(SANS_B, 10)
@@ -293,26 +293,26 @@ def card_grid(draw, y, height):
 
         # Headline: one size for both lines, the largest that fits the width and
         # the two lines that must fit the card's remaining height.
-        avail_h = rowh - tab_h - 6
-        hs = 15
-        while hs > 8:
+        avail_h = rowh - tab_h - 8
+        hs = 21
+        while hs > 10:
             fh = font(SERIF_B, hs)
             need = int(hs * 1.14) * len(card["head"])
             widest = max(draw.textlength(ln, font=fh) for ln in card["head"])
-            if need <= avail_h * 0.62 and widest <= cardw - 6:
+            if need <= avail_h * 0.54 and widest <= cardw - 8:
                 break
             hs -= 1
         fh = font(SERIF_B, hs)
-        head_h = int(hs * 1.14) * len(card["head"])
-        ph = max(30, rowh - tab_h - head_h - 8)
+        head_h = int(hs * 1.20) * len(card["head"])
+        ph = max(40, rowh - tab_h - head_h - 10)
         V.draw_panel(draw, card["icon"], (x, yy + tab_h, x + cardw, yy + tab_h + ph))
 
-        cy = yy + tab_h + ph + 4
+        cy = yy + tab_h + ph + 6
         for ln in card["head"]:
             if cy + hs > yy + rowh + 1:
                 break
             draw.text((x + 2, cy), ln, font=fh, fill=INK)
-            cy += int(hs * 1.14)
+            cy += int(hs * 1.20)
     return y + height
 
 
@@ -401,8 +401,8 @@ def render(path):
     bottom = H - 8 - footer_h
     flex = bottom - y
 
-    lead_h = int(flex * 0.34)
-    cards_h = int(flex * 0.42)
+    lead_h = int(flex * 0.31)
+    cards_h = int(flex * 0.46)
     rail_h0 = 0
     rail_h = flex - lead_h - cards_h - 18
 

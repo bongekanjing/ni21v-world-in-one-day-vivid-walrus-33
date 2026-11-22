@@ -123,18 +123,6 @@ CARDS = [
         "deck": "A magnitude 6.1 tremor follows the first, felt about 2am local time.",
         "outlet": "The West Australian", "region": "OCEANIA", "icon": "quake",
     },
-    {
-        "num": 8, "tab": "WORST SINCE 1994", "kicker": "JOHANNESBURG · POLITICS",
-        "head": ["ANC loses its grip on", "South Africa's cities"],
-        "deck": "Its vote falls to 31 percent, its weakest since 1994.",
-        "outlet": "BBC", "region": "AFRICA", "icon": "ballot2",
-    },
-    {
-        "num": 9, "tab": "PRISON DEAL", "kicker": "PORT-AU-PRINCE · GANGS",
-        "head": ["Haiti and El Salvador", "agree three new prisons"],
-        "deck": "Two Salvadoran soldiers are killed in a camp detonation.",
-        "outlet": "ABC News", "region": "LATAM", "icon": "prison",
-    },
 ]
 
 # The day's other reported stories, one short label each. Chosen so that every
@@ -170,6 +158,7 @@ RAIL = [
     ("FIJI AND TONGA", "Both declare emergencies over drought", "OCEANIA"),
     ("BOUGAINVILLE", "Mine operator funds Panguna clean-up at last", "OCEANIA"),
     # Africa
+    ("JOHANNESBURG", "ANC vote falls to 31pc, its worst since 1994", "AFRICA"),
     ("PRETORIA", "First woman deputy president dies at 71", "AFRICA"),
     ("ETHIOPIA", "200 Tigray fighters surrender as tension grows", "AFRICA"),
     ("SOMALIA", "Expels the UAE ambassador over sovereignty", "AFRICA"),
@@ -181,6 +170,7 @@ RAIL = [
     ("LOS ANGELES", "Man convicted of starting the Palisades fire", "N. AMER."),
     ("WASHINGTON", "SEC opens an accounting inquiry into Nvidia", "N. AMER."),
     ("NEW YORK", "Dow sheds 950 points in the week's selloff", "N. AMER."),
+    ("PORT-AU-PRINCE", "Haiti and El Salvador agree three new prisons", "LATAM"),
     ("BRAZIL", "A supercell wrecks 8,000 homes in one town", "LATAM"),
 ]
 

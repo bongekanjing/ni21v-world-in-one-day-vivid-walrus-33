@@ -55,8 +55,8 @@ check(y_reg <= 295, f"region strip ends at {y_reg}, over budget")
 footer_h = 80
 bottom = R.H - 8 - footer_h
 flex = bottom - y_reg
-lead_h = int(flex * 0.34)
-cards_h = int(flex * 0.42)
+lead_h = int(flex * 0.31)
+cards_h = int(flex * 0.46)
 rail_h = flex - lead_h - cards_h - 18
 
 check(lead_h > 205, f"lead row only {lead_h}px: the pictures would be too small")
